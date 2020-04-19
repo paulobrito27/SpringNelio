@@ -1,15 +1,21 @@
 package com.example.cursoSpringNelio.entities;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 
 @Entity
 @Table(name = "tab_product")
 public class Product {
-	
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
@@ -17,7 +23,11 @@ public class Product {
 	private String description;
 	private Double price;
 	private String imgUrl;
-	
+
+	@ManyToMany
+	@JoinTable(name = "tb_product_category", joinColumns = @JoinColumn(name = "product_id"), inverseJoinColumns = @JoinColumn(name = "category_id"))
+	private Set<Category> categories = new HashSet<>();
+
 	public Product() {
 	}
 
@@ -70,6 +80,10 @@ public class Product {
 		this.imgUrl = imgUrl;
 	}
 
+	public Set<Category> getCategories() {
+		return categories;
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -93,6 +107,14 @@ public class Product {
 		} else if (!id.equals(other.id))
 			return false;
 		return true;
+	}
+	
+	public void addCategory(Category c) {
+		this.categories.add(c);
+	}
+	
+	public void removeCategory(Category c) {
+		this.categories.remove(c);
 	}
 
 }
